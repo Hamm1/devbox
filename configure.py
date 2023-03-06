@@ -44,12 +44,6 @@ def macos(home):
         print('Tauri is not installed...')
         subprocess.call(["cargo", "install", "tauri-cli"])
 
-    if os.path.exists("./node_modules") and os.path.exists(home + "/.cargo/bin/cargo-tauri"):
-      print('All dependancies found, building application...')
-      subprocess.call(["cargo", "tauri", "build", "--debug"])
-    else:
-      print("Missing Tauri Dependancies...")
-
 def windows(home):
   if os.name == "nt":
     if not os.path.exists(home + "\\.cargo\\bin\\rustc.exe"):
@@ -81,23 +75,6 @@ def windows(home):
       print("Astro not installed...")
       subprocess.call(["C:\\Program Files\\nodejs\\npm.cmd", "install", "astro", "-g"])
 
-    try:
-      folder_count = len(next(os.walk(".\\node_modules"))[1]) 
-    except:
-      folder_count = 0
-    if not os.path.exists(".\\node_modules") or folder_count < 10:
-      print("NPM Modules are not installed...")
-      subprocess.call(["C:\\Program Files\\nodejs\\npm.cmd", "install"])
-
-    try:
-      folder_count = len(next(os.walk(".\\node_modules"))[1]) 
-    except:
-      folder_count = 0
-    if os.path.exists(".\\node_modules") and folder_count > 10 and os.path.exists(home + "\\.cargo\\bin\\cargo-tauri.exe"):
-      print('All dependancies found, building application...')
-      subprocess.call([home + "\\.cargo\\bin\\cargo.exe", "tauri", "build", "--debug"])
-    else:
-      print("Missing Tauri Dependancies...")
 
 def linux(home):
   if os.name == "posix":
@@ -166,8 +143,11 @@ def linux(home):
       if not os.path.exists(home + "/.zshrc"):
         request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
         f = open(home + "/.zshrc", "w")
-        f.write(request)
+        f.write(request.text)
         f.close()
+        command = f'/bin/bash -c "$(chsh -s `which zsh`)"'
+        proc = subprocess.Popen(command, shell=True, stdout=True)
+        (output, err) = proc.communicate()
         
       if not os.path.exists(home + "/.cargo/bin/rustc") and not os.path.exists("/usr/bin/rustc"):
         print('Rust is not installed...')
