@@ -93,7 +93,7 @@ def linux(home):
         import requests #type: ignore
         
       subprocess.call(["sudo", "apt", "update"])
-      subprocess.call(["sudo", "apt", "upgrade", "y"])
+      subprocess.call(["sudo", "apt", "upgrade", "-y"])
       needed_packages = ["curl", "wget", "zsh", "git", "docker", "ansible-core", "software-properties-common", \
                          "apt-transport-https"]
       cache = apt.Cache()
@@ -125,7 +125,7 @@ def linux(home):
         proc = subprocess.Popen(command, shell=True, stdout=True)
         (output, err) = proc.communicate()
         subprocess.call(["sudo", "apt", "update"])
-        subprocess.call(["sudo", "apt", "install", "code"])
+        subprocess.call(["sudo", "apt", "install", "code", "-y"])
 
       if not os.path.exists("/usr/local/bin/starship"):
         request = requests.get('https://starship.rs/install.sh')
@@ -148,7 +148,7 @@ def linux(home):
 
       if not os.path.exists(home + "/.zshrc"):
         if os.geteuid() == 0:
-          exit("You can't run Rust zshrc with sudo")
+          exit("You can't run zshrc with sudo")
         else:
             request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
             f = open(home + "/.zshrc", "w")
