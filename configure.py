@@ -128,8 +128,12 @@ def linux(home):
         subprocess.call(["sudo", "apt", "install", "code", "-y"])
 
       if not os.path.exists("/usr/local/bin/starship"):
-        request = requests.get('https://starship.rs/install.sh')
-        subprocess.call([request.content, "-y"], shell=True)
+        command = f'/bin/bash -c "$(curl https://starship.rs/install.sh --output /tmp/starship.sh)"'
+        proc = subprocess.Popen(command, shell=True, stdout=True)
+        (output, err) = proc.communicate()
+        subprocess.call(['chmod', '+x', '/tmp/starship.sh'])
+        subprocess.run(['sh', '/tmp/starship.sh', '-y'], shell=False)
+        subprocess.run(['sudo', 'rm', '/tmp/starship.sh'])
       
       if not os.path.exists(home + "/.deno/bin/deno"):
         if os.geteuid() == 0:
