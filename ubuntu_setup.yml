@@ -30,11 +30,15 @@
     changed_when: false
     become: true
   - name: Install deno
+    become: true
+    become_user: matt
     ansible.builtin.shell: |
       curl -fsSL https://deno.land/x/install/install.sh | sh
     failed_when: false
     changed_when: false
   - name: Install bun
+    become: true
+    become_user: matt
     ansible.builtin.shell: |
       curl -fsSL https://bun.sh/install | bash
     failed_when: false
@@ -49,6 +53,7 @@
       name: nodejs
       update_cache: true
   - name: Install Starship
+    become: true
     ansible.builtin.shell: |
       curl https://starship.rs/install.sh --output starship.sh |
       chmod +x ./starship.sh
