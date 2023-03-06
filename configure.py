@@ -126,28 +126,37 @@ def linux(home):
         (output, err) = proc.communicate()
         subprocess.call(["sudo", "apt", "update"])
         subprocess.call(["sudo", "apt", "install", "code"])
-      
-      if not os.path.exists(home + "/.deno/bin/deno"):
-        request = requests.get('https://deno.land/x/install/install.sh')
-        subprocess.call([request.content], shell=True)
-
-      if not os.path.exists(home + "/.bun/bin/bun"):
-        command = f'/bin/bash -c "$(curl -fsSL https://bun.sh/install | bash)"'
-        proc = subprocess.Popen(command, shell=True, stdout=True)
-        (output, err) = proc.communicate()
 
       if not os.path.exists("/usr/local/bin/starship"):
         request = requests.get('https://starship.rs/install.sh')
         subprocess.call([request.content], shell=True)
+      
+      if not os.path.exists(home + "/.deno/bin/deno"):
+        if os.geteuid() == 0:
+          exit("You can't run Deno installation with sudo")
+        else:
+            request = requests.get('https://deno.land/x/install/install.sh')
+            subprocess.call([request.content], shell=True)
+            
+      if not os.path.exists(home + "/.bun/bin/bun"):
+        if os.geteuid() == 0:
+          exit("You can't run Bun installation with sudo")
+        else:
+            command = f'/bin/bash -c "$(curl -fsSL https://bun.sh/install | bash)"'
+            proc = subprocess.Popen(command, shell=True, stdout=True)
+            (output, err) = proc.communicate()
 
       if not os.path.exists(home + "/.zshrc"):
-        request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
-        f = open(home + "/.zshrc", "w")
-        f.write(request.text)
-        f.close()
-        command = f'/bin/bash -c "$(chsh -s `which zsh`)"'
-        proc = subprocess.Popen(command, shell=True, stdout=True)
-        (output, err) = proc.communicate()
+        if os.geteuid() == 0:
+          exit("You can't run Rust zshrc with sudo")
+        else:
+            request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
+            f = open(home + "/.zshrc", "w")
+            f.write(request.text)
+            f.close()
+            command = f'/bin/bash -c "$(chsh -s `which zsh`)"'
+            proc = subprocess.Popen(command, shell=True, stdout=True)
+            (output, err) = proc.communicate()
         
       if not os.path.exists(home + "/.cargo/bin/rustc") and not os.path.exists("/usr/bin/rustc"):
         print('Rust is not installed...')
