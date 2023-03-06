@@ -115,7 +115,8 @@ def linux(home):
         os.system('sudo apt-get install python3-requests')
         import requests #type: ignore
         
-      subprocess.call(["sudo", "apt", "update", "&&", "sudo", "apt", "upgrade", "y"])
+      subprocess.call(["sudo", "apt", "update"])
+      subprocess.call(["sudo", "apt", "upgrade", "y"])
       needed_packages = ["curl", "wget", "zsh", "git", "docker", "ansible-core", "software-properties-common", \
                          "apt-transport-https"]
       cache = apt.Cache()
@@ -137,15 +138,6 @@ def linux(home):
         cache = apt.Cache()
         cache['nodejs'].mark_install()
         cache.commit()
-      
-      if not os.path.exists(home + "/.cargo/bin/rustc") and not os.path.exists("/usr/bin/rustc"):
-        print('Rust is not installed...')
-        if os.geteuid() == 0:
-          exit("You can't run Rust installation with sudo")
-        else:
-          request = requests.get('https://sh.rustup.rs')
-          subprocess.call([request.content], shell=True)
-          # subprocess.call(["sh", "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"])
 
       if not os.path.exists("/usr/bin/code"):
         print('VSCode is not installed...')
@@ -159,7 +151,7 @@ def linux(home):
         subprocess.call(["sudo", "apt", "install", "code"])
       
       if not os.path.exists(home + "/.deno/bin/deno"):
-        request = requests.get('curl -fsSL https://deno.land/x/install/install.sh | sh')
+        request = requests.get('https://deno.land/x/install/install.sh')
         subprocess.call([request.content], shell=True)
 
       if not os.path.exists(home + "/.bun/bin/bun"):
@@ -167,6 +159,24 @@ def linux(home):
         proc = subprocess.Popen(command, shell=True, stdout=True)
         (output, err) = proc.communicate()
 
+      if not os.path.exists("/usr/local/bin/starship"):
+        request = requests.get('https://starship.rs/install.sh')
+        subprocess.call([request.content], shell=True)
+
+      if not os.path.exists(home + "/.zshrc"):
+        request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
+        f = open(home + "/.zshrc", "w")
+        f.write(request)
+        f.close()
+        
+      if not os.path.exists(home + "/.cargo/bin/rustc") and not os.path.exists("/usr/bin/rustc"):
+        print('Rust is not installed...')
+        if os.geteuid() == 0:
+          exit("You can't run Rust installation with sudo")
+        else:
+          request = requests.get('https://sh.rustup.rs')
+          subprocess.call([request.content], shell=True)
+          # subprocess.call(["sh", "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"])
 
     if 'DISTRIB_ID="Arch"' in read:
       print("Arch")
