@@ -1,0 +1,69 @@
+- name: Test
+  hosts: localhost
+  tasks:
+  - name: Update repos and cache
+    ansible.builtin.apt:
+      update_cache: true
+      force_apt_get: true
+      cache_valid_time: 3600
+    tags:
+      - updateall
+      - fullup
+  - name: Upgrade all packages
+    ansible.builtin.apt:
+      upgrade: dist
+      force_apt_get: true
+    tags:
+      - upgradeall
+      - fullup
+  - name: Install all apps
+    become: true
+    ansible.builtin.apt:
+      name: ["curl", "wget", "software-properties-common", "apt-transport-https", "docker", "git", "zsh", "rust-all"]
+    tags:
+      - install
+      - prod
+  - name: Change shell
+    ansible.builtin.shell: |
+     chsh -s `which zsh`
+    changed_when: false
+    become: true
+  - name: Install ohmyzsh
+    ansible.builtin.shell: |
+      set -o pipefail
+      curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+    failed_when: true
+    changed_when: false
+  - name: Install the zsh plugin autosuggestions
+    ansible.builtin.git:
+      repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
+      version: latest
+      dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
+  - name: Install deno
+    ansible.builtin.shell: |
+      set -o pipefail
+      curl -fsSL https://deno.land/x/install/install.sh | sh
+    failed_when: true
+    changed_when: false
+  - name: Install bun
+    ansible.builtin.shell: |
+      set -o pipefail
+      curl -fsSL https://bun.sh/install | bash
+    failed_when: true
+    changed_when: false
+  - name: Install node repo
+    ansible.builtin.shell: |
+      set -o pipefail
+      curl -fsSL https://deb.nodesource.com/setup_19.x | sh
+    failed_when: true
+    changed_when: false
+  - name: Install node package
+    ansible.builtin.apt:
+      name: nodejs
+      update_cache: true
+  - name: Install Starship
+    ansible.builtin.shell: |
+      set -o pipefail
+      curl -sS https://starship.rs/install.sh | sh
+    failed_when: true
+    changed_when: false
