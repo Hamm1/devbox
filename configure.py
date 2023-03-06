@@ -129,7 +129,7 @@ def linux(home):
 
       if not os.path.exists("/usr/local/bin/starship"):
         request = requests.get('https://starship.rs/install.sh')
-        subprocess.call([request.content], shell=True)
+        subprocess.call([request.content, "-y"], shell=True)
       
       if not os.path.exists(home + "/.deno/bin/deno"):
         if os.geteuid() == 0:
