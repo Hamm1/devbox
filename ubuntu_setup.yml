@@ -20,15 +20,15 @@
   - name: Install all apps
     become: true
     ansible.builtin.apt:
-      name: ["curl", "wget", "software-properties-common", "apt-transport-https", "docker", "git", "zsh", "rust-all"]
+      name: ["curl", "wget", "software-properties-common", "apt-transport-https", "docker", "git", "zsh"]
     tags:
       - install
       - prod
   - name: Change shell
-    ansible.builtin.shell: |
-      chsh -s `which zsh`
-    changed_when: false
     become: true
+    ansible.builtin.shell: |
+      sudo chsh -s $(which zsh)
+    changed_when: true
   - name: Install deno
     become: true
     become_user: matt
@@ -52,12 +52,38 @@
     ansible.builtin.apt:
       name: nodejs
       update_cache: true
+  - name: Install Rust
+    become: true
+    become_user: matt
+    ansible.builtin.shell: |
+      curl https://sh.rustup.rs --output rust.sh
+      chmod +x ./rust.sh
+      ./rust.sh -y
+      rm ./rust.sh
+    failed_when: false
+    changed_when: false
   - name: Install Starship
     become: true
     ansible.builtin.shell: |
-      curl https://starship.rs/install.sh --output starship.sh |
+      curl https://starship.rs/install.sh --output starship.sh
       chmod +x ./starship.sh
       ./starship.sh -y
-      rm ./starship
+      rm ./starship.sh
+    failed_when: false
+    changed_when: false
+  - name: Configure Docker
+    become: true
+    ansible.builtin.shell: |
+      addgroup --system docker
+      adduser $USER docker
+      newgrp docker
+      usermod -aG docker $USER
+    failed_when: false
+    changed_when: false
+  - name: Configure ZSHRC
+    become: true
+    become_user: matt
+    ansible.builtin.shell: |
+      curl 'https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc' --output /home/$(whoami)/.zshrc
     failed_when: false
     changed_when: false
