@@ -168,7 +168,16 @@ def linux(home):
           exit("You can't run Rust installation with sudo")
         else:
           request = requests.get('https://sh.rustup.rs')
-          subprocess.call([request.content], shell=True)
+          f = open("./rust.sh", "w")
+          f.write(request.text)
+          f.close()
+          subprocess.call(["chmod", "+x", "./rust.sh"])
+          subprocess.call(["sh","./rust.sh","-y"])
+          subprocess.call(["sh","rm","./rust.sh"])
+          #subprocess.call([request.content], shell=True)
+          #command = f'/bin/bash -c "$(curl https://sh.rustup.rs --output ./rust.sh;chmod +x ./rust.sh;./rust.sh -y;rm ./rust.sh)"'
+          #proc = subprocess.Popen(command, shell=True, stdout=True)
+          #(output, err) = proc.communicate()
           # subprocess.call(["sh", "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"])
 
     if 'DISTRIB_ID="Arch"' in read:
