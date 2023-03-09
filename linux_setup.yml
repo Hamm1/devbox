@@ -96,10 +96,21 @@
       become: true
       ansible.builtin.shell: |
         sudo pacman -Syy
+        sudo pacman -S docker --noconfirm
       failed_when: false
       changed_when: false
-    - name: Install Arch packages
+      - name: Install yay
       become: true
-      community.general.pacman:
-        name: ["curl", "wget", "software-properties-common", "apt-transport-https", "docker", "git", "zsh"]
-    when: ansible_os_family == "Arch"
+      ansible.builtin.shell: |
+        git clone https://aur.archlinux.org/yay.git
+        cd yay
+        makepkg -si
+        cd ..
+        rm -rf /yay
+      failed_when: false
+      changed_when: false
+    # - name: Install Arch packages
+    #   become: true
+    #   community.general.pacman:
+    #     name: ["curl", "wget", "software-properties-common", "apt-transport-https", "docker", "git", "zsh"]
+    when: ansible_os_family == "Archlinux"
