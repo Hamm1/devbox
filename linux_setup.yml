@@ -106,9 +106,9 @@
         git clone https://aur.archlinux.org/yay.git
         sudo chown -R tecmint:tecmint ./yay
         cd yay
-        makepkg -si
+        makepkg -si --noconfirm
         cd ..
-        sudo rm -rf /yay
+        sudo rm -rf yay
       failed_when: false
       changed_when: false
     # - name: Install Arch packages
