@@ -92,6 +92,12 @@
     when: ansible_os_family == "Debian"
     
   - block:
+    - name: Update Pacman database
+      become: true
+      ansible.builtin.shell: |
+        sudo pacman -Syy
+      failed_when: false
+      changed_when: false
     - name: Install Arch packages
       become: true
       community.general.pacman:

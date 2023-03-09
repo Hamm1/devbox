@@ -180,10 +180,11 @@ def linux(home):
           #(output, err) = proc.communicate()
           # subprocess.call(["sh", "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"])
 
-    if 'DISTRIB_ID="Arch"' in read:
+    if 'DISTRIB_ID="Arch"' in read or os.path.exists('/etc/pacman.conf'):
       print("Arch")
       needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg", "libvips", "nodejs", "rust", "rust-src"]
       # needed_packages.append("base-devel")
+      subprocess.call(["pacman", "-Syy"])
       for package in needed_packages:
         check = subprocess.call(["pacman", "-Qe", package])
         if check != 0:
