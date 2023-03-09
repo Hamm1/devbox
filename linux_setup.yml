@@ -96,7 +96,7 @@
       become: true
       ansible.builtin.shell: |
         sudo pacman -Syy
-        sudo pacman -S docker --noconfirm
+        sudo pacman -S docker rust-src llvm-libs nodejs zsh starship deno --noconfirm
       failed_when: false
       changed_when: false
     - name: Install yay
@@ -109,6 +109,23 @@
         makepkg -si --noconfirm
         cd ..
         sudo rm -rf yay
+      failed_when: false
+      changed_when: false
+    - name: Change shell
+      become: true
+      ansible.builtin.shell: |
+        sudo chsh -s $(which zsh)
+      changed_when: true
+    - name: Install bun
+      become: true
+      become_user: matt
+      ansible.builtin.shell: |
+        curl -fsSL https://bun.sh/install | bash
+    - name: Configure ZSHRC
+      become: true
+      become_user: matt
+      ansible.builtin.shell: |
+        curl 'https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc' --output /home/$(whoami)/.zshrc
       failed_when: false
       changed_when: false
     # - name: Install Arch packages
