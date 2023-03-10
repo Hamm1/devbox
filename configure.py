@@ -46,12 +46,13 @@ def macos(home):
 
 def windows(home):
   if os.name == "nt":
-    if not os.path.exists(home + "\\.cargo\\bin\\rustc.exe"):
-      print("Rust is not installed...")
-      if not os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
+    if not os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
         os.system("powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol \
                   = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;\
                   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
+    
+    if not os.path.exists(home + "\\.cargo\\bin\\rustc.exe"):
+      print("Rust is not installed...")
       if os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
         os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install visualstudio2022-workload-vctools -y")
         os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install rustup.install -y")
@@ -61,20 +62,23 @@ def windows(home):
         print("Tauri is not installed...")
         subprocess.call([home + "\\.cargo\\bin\\cargo.exe", "install", "tauri-cli"])
 
-    if not os.path.exists("C:\\Program Files\\nodejs\\node.exe"):
-      print("Node.js is not installed...")
-      if not os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
-        os.system("powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol \
-                  = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;\
-                  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
-      if os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
-        os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install nodejs -y")
-        os.environ['PATH'] += os.pathsep + 'C:/Program Files/nodejs/'
+    check = ["C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe;docker-desktop",
+             "C:\\ProgramData\\chocolatey\\lib\\deno\\deno.exe;deno",
+             "C:\\Program Files\\Microsoft VS Code\\bin\\code;vscode",
+             "C:\\Program Files\\Git\\cmd\\git.exe;git",
+             "C:\\Program Files\\PowerShell\\7\\pwsh.exe;powershell-core",
+             "C:\\Program Files\\nodejs\\node.exe;nodejs"]
+    
+    for c in check:
+      if not os.path.exists(c.split(";")[0]):
+        print(c.split(";")[0] + " is not installed...")
+        if os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
+          os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install " + c.split(";")[1] + " -y")
 
     if not os.path.exists(home + ".\\AppData\\Roaming\\npm\\astro.cmd"):
       print("Astro not installed...")
+      os.environ['PATH'] += os.pathsep + 'C:/Program Files/nodejs/'
       subprocess.call(["C:\\Program Files\\nodejs\\npm.cmd", "install", "astro", "-g"])
-
 
 def linux(home):
   if os.name == "posix":
