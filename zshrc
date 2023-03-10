@@ -3,7 +3,7 @@
 autoload -Uz promptinit
 promptinit
 
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libgtk3-nocsd.so.0
+export LD_PRELOAD=""
 setopt histignorealldups sharehistory
 
 # Use emacs keybindings even if our EDITOR is set to vi

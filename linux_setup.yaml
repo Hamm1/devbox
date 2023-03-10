@@ -155,13 +155,13 @@
           become: true
           ansible.builtin.git:
             repo: https://aur.archlinux.org/yay.git
-            dest: ./
+            dest: ./yay
             clone: true
         - name: Install yay
           become: true
           become_user: "{{ user }}"
           ansible.builtin.shell: |
-            sudo chown -R "{{ user }}":"{{ user }}" ./yay
+            sudo chown -R {{ user }}:{{ user }} ./yay
             cd yay
             makepkg -si --noconfirm
             cd ..
@@ -198,4 +198,13 @@
             mode: '0755'
           failed_when: false
           changed_when: false
+        - name: Configure ZSHRC
+          become: true
+          ansible.builtin.get_url:
+            url: 'https://github.com/Hamm1/devbox/blob/main/pacman.conf'
+            dest: /etc/pacman.conf
+            mode: '0755'
+          failed_when: false
+          changed_when: false
       when: ansible_os_family == "Archlinux"
+
