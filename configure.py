@@ -213,6 +213,11 @@ def linux(home):
             command = f'/bin/bash -c "$(chsh -s $(which zsh))"'
             proc = subprocess.Popen(command, shell=True, stdout=True)
             (output, err) = proc.communicate()
+      
+      request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/pacman.conf')
+      f = open(home + "/pacman.conf", "w")
+      f.write(request.text)
+      f.close()
 
     if os.path.exists("/etc/fedora-release"):
       print("Fedora")
