@@ -218,12 +218,18 @@ def linux(home):
 
       if os.path.exists("/usr/bin/yay") and not os.path.exists("/usr/bin/bun"):
         subprocess.call(["yay", "-S", "bun-bin", "--noconfirm"])
-      
-      import requests #type: ignore
-      request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/pacman.conf')
-      f = open("/etc/pacman.conf", "w")
-      f.write(request.text)
-      f.close()
+
+      if os.path.exists("/usr/bin/yay") and not os.path.exists("/usr/bin/code"):
+        subprocess.call(["yay", "-S", "visual-studio-code-bin", "--noconfirm"])
+
+      if os.geteuid() != 0:
+        print("You have to run the python script as sudo to modify pacman.conf")
+      else:
+        import requests #type: ignore
+        request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/pacman.conf')
+        f = open("/etc/pacman.conf", "w")
+        f.write(request.text)
+        f.close()
 
     if os.path.exists("/etc/fedora-release"):
       print("Fedora")
