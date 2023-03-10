@@ -137,7 +137,7 @@
           become: true
           ansible.builtin.get_url:
             url: 'https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc'
-            dest: /home/{{ user  }}/.zshrc
+            dest: /home/{{ user }}/.zshrc
             mode: a+x
           failed_when: false
           changed_when: false
