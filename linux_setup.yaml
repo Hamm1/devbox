@@ -146,9 +146,9 @@
       block:
         - name: Update Pacman database
           become: true
-          ansible.builtin.shell: >
+          ansible.builtin.shell: |
             sudo pacman -Syy
-            sudo pacman -S docker rust-src llvm-libs nodejs zsh starship deno --noconfirm
+            sudo pacman -S docker rust-src llvm-libs nodejs zsh starship deno unzip --noconfirm
           failed_when: false
           changed_when: false
         - name: Download yay
@@ -156,12 +156,12 @@
           ansible.builtin.git:
             repo: https://aur.archlinux.org/yay.git
             dest: ./
-            version: V11.3.2-1
+            clone: true
         - name: Install yay
           become: true
           become_user: "{{ user }}"
           ansible.builtin.shell: |
-            sudo chown -R tecmint:tecmint ./yay
+            sudo chown -R "{{ user }}":"{{ user }}" ./yay
             cd yay
             makepkg -si --noconfirm
             cd ..
@@ -194,8 +194,8 @@
           become: true
           ansible.builtin.get_url:
             url: 'https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc'
-            dest: /home/$(whoami)/.zshrc
-            mode: a+x
+            dest: /home/{{ user }}/.zshrc
+            mode: '0755'
           failed_when: false
           changed_when: false
       when: ansible_os_family == "Archlinux"
