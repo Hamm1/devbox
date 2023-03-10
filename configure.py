@@ -158,7 +158,7 @@ def linux(home):
             f = open(home + "/.zshrc", "w")
             f.write(request.text)
             f.close()
-            command = f'/bin/bash -c "$(chsh -s `which zsh`)"'
+            command = f'/bin/bash -c "$(chsh -s $(which zsh))"'
             proc = subprocess.Popen(command, shell=True, stdout=True)
             (output, err) = proc.communicate()
         
@@ -182,13 +182,37 @@ def linux(home):
 
     if 'DISTRIB_ID="Arch"' in read or os.path.exists('/etc/pacman.conf'):
       print("Arch")
-      needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg", "libvips", "nodejs", "rust", "rust-src"]
+      needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg" \
+                         , "libvips", "nodejs", "rust", "rust-src", "docker", "unzip", "deno", "zsh", "starship", "bun-bin"]
       # needed_packages.append("base-devel")
       subprocess.call(["pacman", "-Syy"])
       for package in needed_packages:
         check = subprocess.call(["pacman", "-Qe", package])
         if check != 0:
           subprocess.call(["sudo","pacman", "-S", "--needed", package, "--noconfirm"])
+
+      if not os.path.exists("/usr/bin/yay"):
+        if os.geteuid() == 0:
+          exit("You can't run yay with sudo")
+        else:
+          subprocess.call(["git", "clone", "https://aur.archlinux.org/yay.git"])
+          subprocess.call(["sudo", "chown", "-R" "matt", ":", "matt", "./yay"])
+          subprocess.call(["cd","./yay"])
+          subprocess.call(["makepkg", "-si", "--noconfirm"])
+          subprocess.call(["cd",".."])
+          subprocess.call(["sudo", "rm", "-rf", "yay"])
+      
+      if not os.path.exists(home + "/.zshrc"):
+        if os.geteuid() == 0:
+          exit("You can't run zshrc with sudo")
+        else:
+            request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
+            f = open(home + "/.zshrc", "w")
+            f.write(request.text)
+            f.close()
+            command = f'/bin/bash -c "$(chsh -s $(which zsh))"'
+            proc = subprocess.Popen(command, shell=True, stdout=True)
+            (output, err) = proc.communicate()
 
     if os.path.exists("/etc/fedora-release"):
       print("Fedora")
