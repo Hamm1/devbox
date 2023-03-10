@@ -198,7 +198,7 @@
             mode: '0755'
           failed_when: false
           changed_when: false
-        - name: Configure ZSHRC
+        - name: Configure pacman
           become: true
           ansible.builtin.get_url:
             url: 'https://raw.githubusercontent.com/Hamm1/devbox/main/pacman.conf'
