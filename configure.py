@@ -46,12 +46,13 @@ def macos(home):
 
 def windows(home):
   if os.name == "nt":
-    if not os.path.exists(home + "\\.cargo\\bin\\rustc.exe"):
-      print("Rust is not installed...")
-      if not os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
+    if not os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
         os.system("powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol \
                   = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;\
                   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
+    
+    if not os.path.exists(home + "\\.cargo\\bin\\rustc.exe"):
+      print("Rust is not installed...")
       if os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
         os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install visualstudio2022-workload-vctools -y")
         os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install rustup.install -y")
@@ -61,20 +62,23 @@ def windows(home):
         print("Tauri is not installed...")
         subprocess.call([home + "\\.cargo\\bin\\cargo.exe", "install", "tauri-cli"])
 
-    if not os.path.exists("C:\\Program Files\\nodejs\\node.exe"):
-      print("Node.js is not installed...")
-      if not os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
-        os.system("powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol \
-                  = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;\
-                  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
-      if os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
-        os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install nodejs -y")
-        os.environ['PATH'] += os.pathsep + 'C:/Program Files/nodejs/'
+    check = ["C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe;docker-desktop",
+             "C:\\ProgramData\\chocolatey\\lib\\deno\\deno.exe;deno",
+             "C:\\Program Files\\Microsoft VS Code\\bin\\code;vscode",
+             "C:\\Program Files\\Git\\cmd\\git.exe;git",
+             "C:\\Program Files\\PowerShell\\7\\pwsh.exe;powershell-core",
+             "C:\\Program Files\\nodejs\\node.exe;nodejs"]
+    
+    for c in check:
+      if not os.path.exists(c.split(";")[0]):
+        print(c.split(";")[0] + " is not installed...")
+        if os.path.exists("C:\\ProgramData\\chocolatey\\bin\\choco.exe"):
+          os.system("C:\\ProgramData\\chocolatey\\bin\\choco.exe install " + c.split(";")[1] + " -y")
 
     if not os.path.exists(home + ".\\AppData\\Roaming\\npm\\astro.cmd"):
       print("Astro not installed...")
+      os.environ['PATH'] += os.pathsep + 'C:/Program Files/nodejs/'
       subprocess.call(["C:\\Program Files\\nodejs\\npm.cmd", "install", "astro", "-g"])
-
 
 def linux(home):
   if os.name == "posix":
@@ -181,7 +185,7 @@ def linux(home):
             f = open(home + "/.zshrc", "w")
             f.write(request.text)
             f.close()
-            command = f'/bin/bash -c "$(chsh -s `which zsh`)"'
+            command = f'/bin/bash -c "$(chsh -s $(which zsh))"'
             proc = subprocess.Popen(command, shell=True, stdout=True)
             (output, err) = proc.communicate()
         
@@ -205,13 +209,54 @@ def linux(home):
 
     if 'DISTRIB_ID="Arch"' in read or os.path.exists('/etc/pacman.conf'):
       print("Arch")
-      needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg", "libvips", "nodejs", "rust", "rust-src", "docker"]
+      needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg" \
+                         , "libvips", "nodejs", "rust", "rust-src", "docker", "unzip", "deno", "zsh", "starship", "python-requests"]
       # needed_packages.append("base-devel")
-      subprocess.call(["pacman", "-Syy"])
+      subprocess.call(["sudo", "pacman", "-Syy"])
       for package in needed_packages:
         check = subprocess.call(["pacman", "-Qe", package])
         if check != 0:
           subprocess.call(["sudo","pacman", "-S", "--needed", package, "--noconfirm"])
+
+      if not os.path.exists("/usr/bin/yay"):
+        if os.geteuid() == 0:
+          exit("You can't run yay with sudo")
+        else:
+          subprocess.call(["git", "clone", "https://aur.archlinux.org/yay.git"])
+          subprocess.call(["sudo", "chown", "-R" "matt", ":", "matt", "./yay"])
+          cwd = os.getcwd()
+          os.chdir(cwd + "/yay")
+          subprocess.call(["makepkg", "-si", "--noconfirm"])
+          os.chdir(cwd)
+          subprocess.call(["sudo", "rm", "-rf", "yay"])
+      
+      if not os.path.exists(home + "/.zshrc"):
+        if os.geteuid() == 0:
+          print("You can't run zshrc with sudo")
+        else:
+          import requests #type: ignore
+          request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/zshrc')
+          f = open(home + "/.zshrc", "w")
+          f.write(request.text)
+          f.close()
+          command = f'/bin/bash -c "$(chsh -s $(which zsh))"'
+          proc = subprocess.Popen(command, shell=True, stdout=True)
+          (output, err) = proc.communicate()
+
+      if os.path.exists("/usr/bin/yay") and not os.path.exists("/usr/bin/bun"):
+        subprocess.call(["yay", "-S", "bun-bin", "--noconfirm"])
+
+      if os.path.exists("/usr/bin/yay") and not os.path.exists("/usr/bin/code"):
+        subprocess.call(["yay", "-S", "visual-studio-code-bin", "--noconfirm"])
+
+      if os.geteuid() != 0:
+        print("You have to run the python script as sudo to modify pacman.conf")
+      else:
+        import requests #type: ignore
+        request = requests.get('https://raw.githubusercontent.com/Hamm1/devbox/main/pacman.conf')
+        f = open("/etc/pacman.conf", "w")
+        f.write(request.text)
+        f.close()
 
     if os.path.exists("/etc/fedora-release"):
       print("Fedora")
