@@ -94,8 +94,8 @@ def linux(home):
         
       subprocess.call(["sudo", "apt", "update"])
       subprocess.call(["sudo", "apt", "upgrade", "-y"])
-      needed_packages = ["curl", "wget", "zsh", "git", "docker", "ansible-core", "software-properties-common", \
-                         "apt-transport-https"]
+      needed_packages = ["curl", "wget", "zsh", "git", "ansible-core", "software-properties-common", \
+                         "apt-transport-https", "ca-certificates", "lsb-release"]
       cache = apt.Cache()
       for package in needed_packages:
         if not cache[package].is_installed:
@@ -135,6 +135,29 @@ def linux(home):
         subprocess.run(['sh', '/tmp/starship.sh', '-y'], shell=False)
         subprocess.run(['sudo', 'rm', '/tmp/starship.sh'])
       
+      if not os.path.exists('/usr/bin/docker'):
+        print('Docker is not installed...')
+        subprocess.call(['sudo', 'mkdir', '-m', '0755', '-p', '/etc/apt/keyrings'])
+        command = f'/bin/bash -c "$(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg)"'
+        proc = subprocess.Popen(command, shell=True, stdout=True)
+        (output, err) = proc.communicate()
+        command = f'/bin/bash -c "$(echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null)"'
+        proc = subprocess.Popen(command, shell=True, stdout=True)
+        (output, err) = proc.communicate()
+        subprocess.run(['sudo', 'apt', 'update'])
+        needed_packages = ["docker-ce", "docker-ce-cli", "containerd.io", "docker-buildx-plugin", "docker-compose-plugin"]
+        cache = apt.Cache()
+        for package in needed_packages:
+          if not cache[package].is_installed:
+            cache[package].mark_install()
+
+        if cache.install_count > 0:
+          try:
+            print("Installing missing APT Build packages")
+            cache.commit()
+          except Exception as arg:
+            print("Sorry, package installation failed [{err}]".format(err=str(arg)))
+
       if not os.path.exists(home + "/.deno/bin/deno"):
         if os.geteuid() == 0:
           exit("You can't run Deno installation with sudo")
@@ -182,7 +205,7 @@ def linux(home):
 
     if 'DISTRIB_ID="Arch"' in read or os.path.exists('/etc/pacman.conf'):
       print("Arch")
-      needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg", "libvips", "nodejs", "rust", "rust-src"]
+      needed_packages = ["webkit2gtk", "curl", "wget" ,"openssl", "appmenu-gtk-module", "gtk3", "libappindicator-gtk3", "librsvg", "libvips", "nodejs", "rust", "rust-src", "docker"]
       # needed_packages.append("base-devel")
       subprocess.call(["pacman", "-Syy"])
       for package in needed_packages:
