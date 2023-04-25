@@ -49,3 +49,5 @@ export DENO_INSTALL="/home/matt/.deno"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
