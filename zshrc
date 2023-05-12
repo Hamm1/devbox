@@ -3,7 +3,7 @@
 autoload -Uz promptinit
 promptinit
 
-export LD_PRELOAD=""
+# export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libgtk3-nocsd.so.0
 setopt histignorealldups sharehistory
 
 # Use emacs keybindings even if our EDITOR is set to vi
@@ -49,5 +49,11 @@ export DENO_INSTALL="/home/matt/.deno"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# deno
+export PATH="$HOME/.deno/bin:$PATH"
+
+# rust
+export PATH="$HOME/.cargo/bin:$PATH"
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
