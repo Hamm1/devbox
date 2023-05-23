@@ -128,15 +128,15 @@
             rm ./starship.sh
           failed_when: false
           changed_when: false
-        - name: Configure Docker
-          become: true
-          ansible.builtin.shell: |
-            addgroup --system docker
-            adduser $USER docker
-            newgrp docker
-            usermod -aG docker $USER
-          failed_when: false
-          changed_when: false
+#         - name: Configure Docker
+#           become: true
+#           ansible.builtin.shell: |
+#             addgroup --system docker
+#             adduser $USER docker
+#             newgrp docker
+#             usermod -aG docker $USER
+#           failed_when: false
+#           changed_when: false
         - name: Configure ZSHRC
           become: true
           ansible.builtin.get_url:
