@@ -1,7 +1,7 @@
 - name: Test
   hosts: all
   vars:
-    user: matt
+    user: root
   gather_facts: true
   tasks:
     - name: Ubuntu
