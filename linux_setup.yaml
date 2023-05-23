@@ -16,6 +16,10 @@
             - updateall
             - fullup
           become: true
+        - name: Remove apt lock file
+          file:
+            state: absent
+            path: "/var/lib/dpkg/lock"
         - name: Upgrade all packages
           ansible.builtin.apt:
             upgrade: dist
