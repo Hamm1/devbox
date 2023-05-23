@@ -1,5 +1,4 @@
 - name: Test
-  hosts: localhost
   vars:
     user: matt
   gather_facts: true
