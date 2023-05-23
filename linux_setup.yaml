@@ -4,7 +4,8 @@
     user: matt
   gather_facts: true
   tasks:
-    - name: ubuntu
+    - name: Ubuntu
+      when: ansible_os_family == "Debian"
       block:
         - name: Update repos and cache
           ansible.builtin.apt:
@@ -141,17 +142,25 @@
             mode: a+x
           failed_when: false
           changed_when: false
-      when: ansible_os_family == "Debian"
+        - name: Install zsh Auto Suggestions # noqa latest[git]
+          become: true
+          ansible.builtin.git:
+            repo: https://github.com/zsh-users/zsh-autosuggestions
+            dest: "/home/{{ user }}/.zsh/zsh-autosuggestions"
+            clone: true
     - name: Archlinux
+      when: ansible_os_family == "Archlinux"
       block:
         - name: Update Pacman database
           become: true
           ansible.builtin.shell: |
             sudo pacman -Syy
-            sudo pacman -S docker rust-src llvm-libs nodejs zsh starship deno unzip --noconfirm
+            sudo pacman -S gst-plugins-base gst-plugins-base-libs webkit2gtk webkit2gtk-4.1 --noconfirm
+            sudo pacman -S appmenu-gtk-module gtk3 libappindicator-gtk3 librsvg libvips --noconfirm
+            sudo pacman -S wget openssl curl docker rust-src llvm-libs nodejs npm zsh starship deno unzip --noconfirm
           failed_when: false
           changed_when: false
-        - name: Download yay
+        - name: Download yay # noqa latest[git]
           become: true
           ansible.builtin.git:
             repo: https://aur.archlinux.org/yay.git
@@ -206,5 +215,15 @@
             mode: '0755'
           failed_when: false
           changed_when: false
-      when: ansible_os_family == "Archlinux"
-
+        - name: Install zsh Auto Suggestions # noqa latest[git]
+          become: true
+          ansible.builtin.git:
+            repo: https://github.com/zsh-users/zsh-autosuggestions
+            dest: "/home/{{ user }}/.zsh/zsh-autosuggestions"
+            clone: true
+        - name: Install VSCode
+          become: true
+          ansible.builtin.shell: |
+            yay -S visual-studio-code-bin --noconfirm
+          failed_when: false
+          changed_when: false
