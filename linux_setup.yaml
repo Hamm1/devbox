@@ -1,4 +1,5 @@
 - name: Test
+  hosts: all
   vars:
     user: matt
   gather_facts: true
