@@ -24,6 +24,7 @@
             - upgradeall
             - fullup
           become: true
+          become_user: "{{ user }}"
         - name: Install all apps
           ansible.builtin.apt:
             name:
@@ -38,6 +39,7 @@
             - install
             - prod
           become: true
+          become_user: "{{ user }}"
         - name: Change shell
           become: true
           ansible.builtin.shell: |
