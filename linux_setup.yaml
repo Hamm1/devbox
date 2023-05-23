@@ -23,11 +23,6 @@
           become_user: "{{ user }}"
         - name: Wait for APT Lock
           shell:  while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
-        - name: Change shell
-          become: true
-          ansible.builtin.shell: |
-            sudo chsh -s $(which zsh)
-          changed_when: true
         - name: Download deno
           become: true
           become_user: "{{ user }}"
