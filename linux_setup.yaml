@@ -21,10 +21,14 @@
             path: "/var/lib/dpkg/lock"
           become: true
           become_user: "{{ user }}"
+        - name: Wait for APT Lock
+          shell:  while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
         - name: Install all apps
           become: true
           become_user: "{{ user }}"
           ansible.builtin.apt:
+            state: present
+            force_apt_get: yes
             name:
               - curl
               - wget
