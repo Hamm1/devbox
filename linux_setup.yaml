@@ -72,11 +72,11 @@
           failed_when: false
           changed_when: false
         - name: Install node package
-          become: true
-          remote_user: "{{ user }}"
           ansible.builtin.apt:
             name: nodejs
             update_cache: true
+          become: true
+          remote_user: "{{ user }}"
         - name: Download Rust
           become: true
           ansible.builtin.get_url:
