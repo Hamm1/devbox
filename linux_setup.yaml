@@ -73,7 +73,7 @@
           changed_when: false
         - name: Install node package
           become: true
-          become_user: "{{ user }}"
+          remote_user: "{{ user }}"
           ansible.builtin.apt:
             name: nodejs
             update_cache: true
