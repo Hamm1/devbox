@@ -15,10 +15,16 @@
             - updateall
             - fullup
           become: true
-        - name: Remove apt lock file
+        - name: Remove dpkg lock file
           file:
             state: absent
             path: "/var/lib/dpkg/lock"
+          become: true
+          become_user: "{{ user }}"
+        - name: Remove apt lock file
+          file:
+            state: absent
+            path: "/var/lib/apt/lock"
           become: true
           become_user: "{{ user }}"
         - name: Wait for APT Lock
@@ -76,7 +82,7 @@
             name: nodejs
             update_cache: true
           become: true
-          remote_user: "{{ user }}"
+          become_user: "{{ user }}"
         - name: Download Rust
           become: true
           ansible.builtin.get_url:
