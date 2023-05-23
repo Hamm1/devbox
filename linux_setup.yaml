@@ -21,14 +21,6 @@
             path: "/var/lib/dpkg/lock"
           become: true
           become_user: "{{ user }}"
-        - name: Upgrade all packages
-          ansible.builtin.apt:
-            upgrade: dist
-            force_apt_get: true
-          tags:
-            - upgradeall
-            - fullup
-          become: true
         - name: Install all apps
           ansible.builtin.apt:
             name:
