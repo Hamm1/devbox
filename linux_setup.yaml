@@ -23,7 +23,8 @@
           tags:
             - upgradeall
             - fullup
-          become_user: "{{ user }}"
+          become: true
+          become_user: root
         - name: Install all apps
           ansible.builtin.apt:
             name:
