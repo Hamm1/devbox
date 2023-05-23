@@ -22,6 +22,8 @@
           become: true
           become_user: "{{ user }}"
         - name: Install all apps
+          become: true
+          become_user: "{{ user }}"
           ansible.builtin.apt:
             name:
               - curl
@@ -34,8 +36,6 @@
           tags:
             - install
             - prod
-          become: true
-          become_user: "{{ user }}"
         - name: Change shell
           become: true
           ansible.builtin.shell: |
