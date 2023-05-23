@@ -80,8 +80,6 @@
         - name: Install node package
           ansible.builtin.apt:
             name: nodejs
-          become: true
-          become_user: "{{ user }}"
         - name: Download Rust
           become: true
           ansible.builtin.get_url:
