@@ -1,4 +1,4 @@
-- name: Test
+- name: Linux Setup
   hosts: all
   vars:
     user: matt
@@ -81,7 +81,7 @@
         - name: Download node
           become: true
           ansible.builtin.get_url:
-            url: 'https://deb.nodesource.com/setup_19.x'
+            url: 'https://deb.nodesource.com/setup_20.x'
             dest: ./node.sh
             mode: a+x
           failed_when: false
@@ -128,15 +128,15 @@
             rm ./starship.sh
           failed_when: false
           changed_when: false
-#         - name: Configure Docker
-#           become: true
-#           ansible.builtin.shell: |
-#             addgroup --system docker
-#             adduser $USER docker
-#             newgrp docker
-#             usermod -aG docker $USER
-#           failed_when: false
-#           changed_when: false
+        # - name: Configure Docker
+        #   become: true
+        #   ansible.builtin.shell: |
+        #     addgroup --system docker
+        #     adduser $USER docker
+        #     newgrp docker
+        #     usermod -aG docker $USER
+        #   failed_when: false
+        #   changed_when: false
         - name: Configure ZSHRC
           become: true
           ansible.builtin.get_url:
@@ -185,23 +185,6 @@
           ansible.builtin.shell: |
             sudo chsh -s $(which zsh)
           changed_when: true
-        - name: Download bun
-          become: true
-          become_user: "{{ user }}"
-          ansible.builtin.get_url:
-            url: 'https://bun.sh/install'
-            dest: ./bun.sh
-            mode: a+x
-          failed_when: false
-          changed_when: false
-        - name: Install bun
-          become: true
-          become_user: "{{ user }}"
-          ansible.builtin.shell: |
-            ./bun.sh
-            rm -rf bun.sh
-          failed_when: false
-          changed_when: false
         - name: Configure ZSHRC
           become: true
           ansible.builtin.get_url:
@@ -228,5 +211,11 @@
           become: true
           ansible.builtin.shell: |
             yay -S visual-studio-code-bin --noconfirm
+          failed_when: false
+          changed_when: false
+        - name: Install Bun
+          become: true
+          ansible.builtin.shell: |
+            yay -S bun-bin --noconfirm
           failed_when: false
           changed_when: false
