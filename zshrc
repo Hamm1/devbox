@@ -40,11 +40,11 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 eval "$(starship init zsh)"
-export DENO_INSTALL="/home/matt/.deno"
+export DENO_INSTALL="~/.deno"
   export PATH="$DENO_INSTALL/bin:$PATH"
 
 # bun completions
-[ -s "/home/matt/.bun/_bun" ] && source "/home/matt/.bun/_bun"
+[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
