@@ -56,4 +56,7 @@ export PATH="$HOME/.deno/bin:$PATH"
 # rust
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# zig
+export PATH="$HOME/.zig:$PATH"
+
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
