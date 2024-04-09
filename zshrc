@@ -59,4 +59,7 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # zig
 export PATH="$HOME/.zig:$PATH"
 
+# dagger
+export PATH="$HOME/.local/bin:$PATH"
+
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
