@@ -62,4 +62,6 @@ export PATH="$HOME/.zig:$PATH"
 # dagger
 export PATH="$HOME/.local/bin:$PATH"
 
+export LC_ALL="C.UTF-8"
+
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
