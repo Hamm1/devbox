@@ -43,6 +43,9 @@ eval "$(starship init zsh)"
 export DENO_INSTALL="~/.deno"
   export PATH="$DENO_INSTALL/bin:$PATH"
 
+# neovim
+export PATH="$HOME/.local/nvim-linux64/bin:$PATH"
+
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 
