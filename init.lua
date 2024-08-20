@@ -582,7 +582,6 @@ require('lazy').setup({
         tsserver = {},
         tailwindscss = {},
         zls = {},
-        ansible-lint = {},
         astro = {},
         denols = {},
         mdx_analyser = {},
