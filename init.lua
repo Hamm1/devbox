@@ -584,7 +584,7 @@ require('lazy').setup({
         zls = {},
         astro = {},
         denols = {},
-        mdx_analyser = {},
+        mdx_analyzer = {},
         powershell_es = {},
         terraformls = {},
         svelte = {},
