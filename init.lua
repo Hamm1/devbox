@@ -589,6 +589,11 @@ require('lazy').setup({
         terraformls = {},
         svelte = {},
         yamlls = {},
+        dockerls = {},
+        ansiblels = {},
+        bashls = {},
+        html = {},
+        
         --
 
         lua_ls = {
