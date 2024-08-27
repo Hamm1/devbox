@@ -587,12 +587,12 @@ require('lazy').setup({
             lint = true,
             enable = true,
             importMap = "./deno.json",
-            enablePaths = {[
+            enablePaths = {
                             "./testing/api_query.ts", "./services/hd_quasar/src/quasar_api.ts", "./middleware/hono/deno/jwt.ts",
                             "./middleware/hono/deno/otel.ts","./apps/hd_web_interface/server","./apps/hd_web_interface/src",
                             "./apps/hd_web_interface/clean.ts","./apps/hd_web_interface/deps.ts","./services/hd_faq/src",
                             "./services/hd_faq/deps.ts","./apps/stig_o_tron/services/deno-conversion"
-                          ]}
+                          }
         },
         mdx_analyzer = {},
         powershell_es = {},
