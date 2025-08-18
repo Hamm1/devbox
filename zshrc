@@ -44,7 +44,7 @@ export DENO_INSTALL="~/.deno"
   export PATH="$DENO_INSTALL/bin:$PATH"
 
 # neovim
-export PATH="$HOME/.local/nvim-linux64/bin:$PATH"
+export PATH="$HOME/.local/nvim-linux-x86_64/bin:$PATH"
 
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
@@ -64,6 +64,12 @@ export PATH="$HOME/.zig:$PATH"
 
 # dagger
 export PATH="$HOME/.local/bin:$PATH"
+
+# pulumi
+export PATH="$HOME/.pulumi/bin:$PATH"
+
+# go
+export PATH="$PATH:/usr/local/go/bin"
 
 export LC_ALL="C.UTF-8"
 
