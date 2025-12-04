@@ -1,4 +1,4 @@
-# 🦅SMDC Help Desk Development Environment Build Scripts🦅
+# 🦅SMDC Development Environment Build Scripts🦅
 ```
 Scripts and ansible playbooks that will completely build the development
 environment for several operating systems.
@@ -33,4 +33,5 @@ without.
 ```
 Run nix-shell in the directory containing shell.nix to
 automatically set up environment.
+
 ```
