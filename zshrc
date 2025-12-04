@@ -39,9 +39,16 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
+# homebrew
+[[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# starship
 eval "$(starship init zsh)"
 export DENO_INSTALL="~/.deno"
   export PATH="$DENO_INSTALL/bin:$PATH"
+
+# mise
+[[ -x $(command -v mise) ]] && eval "$(mise activate zsh)"
 
 # neovim
 export PATH="$HOME/.local/nvim-linux-x86_64/bin:$PATH"
