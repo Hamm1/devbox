@@ -44,39 +44,39 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # starship
 eval "$(starship init zsh)"
-export DENO_INSTALL="~/.deno"
-  export PATH="$DENO_INSTALL/bin:$PATH"
 
 # mise
-[[ -x $(command -v mise) ]] && eval "$(mise activate zsh)"
+[[ -z "$IN_NIX_SHELL" ]] && [[ -x $(command -v mise) ]] && eval "$(mise activate zsh)"
 
 # neovim
 export PATH="$HOME/.local/nvim-linux-x86_64/bin:$PATH"
 
-# bun completions
-[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
+if [[ -z "$IN_NIX_SHELL" ]]; then
+  # bun completions
+  [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+  # bun
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
 
-# deno
-export PATH="$HOME/.deno/bin:$PATH"
+  # deno
+  export PATH="$HOME/.deno/bin:$PATH"
 
-# rust
-export PATH="$HOME/.cargo/bin:$PATH"
+  # rust
+  export PATH="$HOME/.cargo/bin:$PATH"
 
-# zig
-export PATH="$HOME/.zig:$PATH"
+  # zig
+  export PATH="$HOME/.zig:$PATH"
 
-# dagger
-export PATH="$HOME/.local/bin:$PATH"
+  # dagger
+  export PATH="$HOME/.local/bin:$PATH"
 
-# pulumi
-export PATH="$HOME/.pulumi/bin:$PATH"
+  # pulumi
+  export PATH="$HOME/.pulumi/bin:$PATH"
 
-# go
-export PATH="$PATH:/usr/local/go/bin"
+  # go
+  export PATH="$PATH:/usr/local/go/bin"
+fi
 
 export LC_ALL="C.UTF-8"
 
