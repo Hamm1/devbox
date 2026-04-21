@@ -1,20 +1,21 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
-
 return {
 	{
 		"neovim/nvim-lspconfig",
-		event = "LazyFile",
+		event = "BufReadPre",
 		dependencies = {
-			{ "mason-org/mason.nvim", version = "2.0.1" },
-			{ "mason-org/mason-lspconfig.nvim", version = "2.1.0" },
+			{ "mason-org/mason.nvim" },
+			{ "mason-org/mason-lspconfig.nvim" },
+			{ "saghen/blink.cmp" },
 		},
 		opts = {
 			diagnostics = {
+				virtual_text = true,
+				signs = true,
 				underline = true,
 				update_in_insert = false,
-				virtual_text = true,
+				severity_sort = true,
 				float = {
-					focused = false,
+					focusable = false,
 					style = "minimal",
 					border = "rounded",
 					source = "always",
@@ -70,6 +71,13 @@ return {
 			},
 		},
 		config = function(_, opts)
+			vim.diagnostic.config(opts.diagnostics)
+
+			local capabilities = vim.tbl_deep_extend(
+				"force",
+				vim.lsp.protocol.make_client_capabilities(),
+				require("blink.cmp").get_lsp_capabilities()
+			)
 			-- Setup Mason first
 			require("mason").setup()
 
